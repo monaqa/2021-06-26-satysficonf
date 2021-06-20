@@ -1,0 +1,548 @@
+@require: pervasives
+@require: class-slydifi/theme/arctic
+@require: figbox/figbox
+@require: easytable/easytable
+@require: annot
+@require: math
+
+open FigBox
+open EasyTableAlias
+open SlydifiOverlay
+
+let stripe = stripe-r SlydifiThemeArctic.config#color#bg-code
+
+let set-font-size-ratio r ctx =
+  let fsize = (get-font-size ctx) *' r in
+  ctx |> set-font-size fsize
+      |> set-paragraph-margin (fsize *' 0.65) (fsize *' 0.65)
+      |> set-min-gap-of-lines 0pt
+      |> set-leading (fsize *' 1.4)
+
+let-inline ctx \Rust =
+  let ctx =
+    ctx |> set-font Latin (`system:AlfaSlabOne-Regular`, 1.1, 0. -. 0.04)
+  in
+  read-inline ctx {Rust}
+
+let budge ctx color it =
+  let ctx =
+    ctx
+      |> set-font-size 14pt
+      |> set-text-color SlydifiThemeArctic.config#color#fg
+  in
+  let fsize = get-font-size ctx in
+  let dpt = fsize *' 0.4 in
+  let hgt = fsize *' 1.2 in
+  let pads = (fsize *' 0.25, fsize *' 0.25, fsize *' 0.2, fsize *' 0.2) in
+  let deco color (x, y) wid _ _ =
+    let path = Gr.rectangle-round 3pt (x, y -' dpt) (x +' wid, y +' hgt) in
+    [
+      fill color path;
+      stroke 2pt (SlydifiThemeArctic.config#color#separator) path;
+    ]
+  in
+  let ib = script-guard Latin (read-inline ctx it) in
+  inline-frame-inner pads (deco color) ib
+
+let-inline ctx \budge-satysfi-package =
+  budge ctx (Color.of-css `#b4be82`) {\textbf{\SATySFi;} (package)}
+
+let-inline ctx \budge-satysfi-classfile =
+  budge ctx (Color.of-css `#89b8c2`) {\textbf{\SATySFi;} (class file)}
+
+let-inline ctx \budge-rust-program =
+  budge ctx (Color.of-css `#e27878`) {\Rust;}
+
+let add-caption it fb =
+  vconcat [
+    fb;
+    gap 4pt;
+    textbox ?:(SlydifiScheme.apply-font-cfg SlydifiThemeArctic.config#font#pagenum) it
+  ]
+
+let-inline ctx \fig-widfill fbf =
+  let wid = get-text-width ctx in
+  read-inline ctx {\fig-center(fbf wid);}
+
+let-block ctx +emphbox it =
+  let wid = get-text-width ctx in
+  let fbf wid =
+    let fb = textbox it in
+    let bg-color =
+      SlydifiThemeArctic.config#color#emph
+        |> color-inner ?:0.8 SlydifiThemeArctic.config#color#bg
+    in
+    glass-box ?:(align-center, align-center) wid 36pt fb
+      |> bgcolor bg-color
+  in
+  read-block ctx '<+fig-center(fbf wid);>
+
+
+
+in
+
+document '<
+
++make-title(|
+  title = {| \SATySFi; Language Server の | 現状と今後 |};
+  author = {| monaqa |};
+  date = {| 2021年6月26日 |};
+|);
+
++frame{自己紹介}<
+
+  +fig-on-right(include-image 130pt `fig/pdf/logo-190727.pdf` |> frame 0.8pt (Color.black) )<%
+
+    +listing{
+      * 名前：monaqa
+        ** Twitter: \link(`https://twitter.com/mo_naqa`);
+        ** GitHub: \link(`https://github.com/monaqa`);
+
+      * \SATySFi; 歴：2年ぐらい
+
+      * 技術系コミュニティ所属
+
+        ** \SATySFi; Slack
+
+        ** vim-jp Slack etc.
+    }
+
+  >%
+
+>
+
++frame{今までに作った \SATySFi; 関連のプログラム}<
+
+  +description{
+    * \textbf{satysfi-enumitem} \budge-satysfi-package;
+      ** 豊富なスタイルの箇条書きを組むためのパッケージ
+    * \textbf{\SLyDIFi;} \budge-satysfi-classfile;
+      ** スライド作成のためのクラスファイル（このスライドも\SLyDIFi;製）
+    * \textbf{satysfi-easytable} \budge-satysfi-package;
+      ** シンプルな表を簡単に組むためのパッケージ
+    * \textbf{satysfi-azmath} \budge-satysfi-package;
+      ** アクセント、括弧類、 \LaTeX; の `amsmath パッケージ` を真似た数式環境などを提供するパッケージ
+
+  }
+
+>
+
++frame{今までに作った \SATySFi; 関連のプログラム}<
+
+  +description{
+    * \textbf{satysfi-figbox} \budge-satysfi-package;
+      ** 図表を自由に組み合わせ、適切な場所に配置するためのパッケージ
+    * \textbf{satysfi-railway} \budge-satysfi-package;
+      ** グラフィックスを描きやすくするためのパッケージ
+    * \textbf{satysfi-parser} \budge-rust-program;
+      ** Parsing expression grammar (PEG) を使用した \SATySFi; のパーサ
+    * \emph{satysfi-language-server} \budge-rust-program;
+      ** \SATySFi; の言語サーバ
+  }
+
+>
+
++namedframe(`toc`){目次}<
+  +listing{
+    * \ctx?:(in-case [3; 4])(set-text-color (SlydifiThemeArctic.config#color#pagenum)){Language Server Protocol}
+    * \ctx?:(in-case [2; 4])(set-text-color (SlydifiThemeArctic.config#color#pagenum)){\SATySFi; Language Server の現状}
+    * \ctx?:(in-case [2; 3])(set-text-color (SlydifiThemeArctic.config#color#pagenum)){\SATySFi; Language Server の今後}
+  }
+>
+
++section{|Language Server Protocol |}<%
+
++frame{Language Server（言語サーバ）}<
+
+  +p{
+    \emph{言語サーバ}：ある言語の開発に役立つ機能をサービスとして提供したもの。
+  }
+
+  +p{
+    言語別に実装され、以下のような機能を提供する。
+  }
+
+  +fig-center(textbox ?:(set-font-size-ratio 0.8) {
+    \easytable?:[stripe; t; b; v 1;][lw 160pt; lw 400pt]{
+      | 補完 (completion)
+      | ユーザが挿入しようとしている変数名・メソッド名などを予測して候補を表示する \br;
+      （挿入内容に応じスニペットを展開する場合も）
+      | 型情報の表示 (hover)
+      | カーソル上の変数の情報を表示する
+      | 定義ジャンプ\br; (goToDefinition)
+      | カーソル上の変数が定義されている場所に移動する
+      | リネーム (rename)
+      | カーソル上の変数名を変更する
+      | コードアクション\br; (code action)
+      | 言語に応じて様々な操作を実行する（対応するモジュールのインポート、getter/setter の自動作成など）
+      |}
+  });
+
+>
+
++frame{Language Server Protocol (LSP)}<
+
+  +p{
+    言語サーバとクライアントは LSP という通信仕様に従って通信する。
+  }
+
+  +fig-center(
+    include-image 600pt `fig/jpg/language-server-sequence.jpg`
+      |> add-caption { \link(`https://microsoft.github.io/language-server-protocol/overviews/lsp/overview/`); }
+  );
+
+  % +listing{
+  %   * 言語の解析機能を独自のプロセスに分けて実行する言語サーバとテキストエディタがやりとりして
+  %     高度な開発支援機能を実現する仕組み。
+  % }
+  % 
+  % +listing{
+  %   * \emph{言語クライアント (language client)}：テキストエディタ
+  %     ** テキストエディタに対応するクライアントが存在
+  %     ** ユーザの操作に応じて、適切なリクエストを言語サーバに送る
+  % 
+  %   * 言語サーバ (language server)：
+  %     ** 各言語に対応するサーバが存在
+  %     ** クライアントから指示を受け取って適切な結果を返す
+  % }
+
+>
+
++frame?:(2){なぜ LSP なのか：LSP の登場前}<
+
+  % * 各エディタは各々の言語に対して拡張を作る必要があった
+  % * 各言語は各々のエディタに対して拡張を作る必要があった
+  % * ${M} 個のエディタが ${N} 個の言語に対応するには ${MN} 個の拡張が必要
+  % * マイナーなエディタのマイナーな言語に対応する拡張は作られにくい
+
+  +fig-center(include-image ?:(select (fun x -> x)) 660pt `fig/pdf/ls-overview.pdf`);
+
+  +emphbox(
+    select-from-two (only 1) {エディタ・言語毎に各々プラグインや拡張を作る必要があった}
+      {マイナーなエディタ・言語では使用者が少なく実装も進まない}
+    );
+>
+
++frame?:(2){なぜ LSP なのか：LSP の登場後}<
+
+  % * 各エディタはただ一つの言語クライアントを実装すれば良い
+  % * 各言語はただ一つの言語サーバを実装すれば良い
+  % * ${M} 個のエディタが ${N} 個の言語に対応するには拡張が ${M + N} 個あればよい
+  % * マイナーなエディタも簡単にマイナーな言語に対応できる
+
+  +fig-center(include-image ?:(select (fun x -> x + 2)) 660pt `fig/pdf/ls-overview.pdf`);
+
+  +emphbox(
+      {各言語・エディタの実装が1つで済むため、開発が楽}
+    );
+
+>
+
+>%
+
++section{| \SATySFi; Language Server の現状 |}<%
+
++frame{ \SATySFi; Language Server }<
+  +listing{
+    * このリポジトリで開発中 (WIP!)
+
+      \fig-block?:(align-left)(
+        textbox {
+          \link?:({
+            \fig-inline(include-image 400pt `fig/pdf/satysfi-language-server.pdf`);
+          })(`https://github.com/monaqa/satysfi-language-server`);
+        }
+      );
+
+
+    % * パーサは別リポジトリで管理
+    % 
+    %   \fig-block?:(align-left)(
+    %     textbox {
+    %       \link?:({
+    %         \fig-inline(include-image 400pt `fig/pdf/satysfi-parser.pdf`);
+    %       })(`https://github.com/monaqa/satysfi-parser`);
+    %     }
+    %   );
+
+    * 現在、Neovim + coc.nvim のペアで動作することを確認
+      ** VSCode などのエディタで試せる方、お待ちしています
+
+  }
+>
+
++namedframe(`functions`){現在提供している機能\ghost(after 3){（再掲）}}<
+  +listing{
+    * \emph?:(in-case [2]){\weak?:(in-case [3; 4; 5]){補完}}
+    * \emph?:(in-case [3]){\weak?:(in-case [2; 4; 5]){定義ジャンプ}}
+    * \emph?:(in-case [4]){\weak?:(in-case [2; 3; 5]){ホバー}}
+    * \emph?:(in-case [5]){\weak?:(in-case [2; 3; 4]){診断情報の表示}}
+  }
+>
+
++againframe(`functions`);
+
++frame{機能1：補完機能}<
+
+  +listing{
+    * コマンド名の補完
+      ** 編集中のファイル、又は require/import しているパッケージ内で定義されたコマンドを補完
+      ** 現在のモード（インライン/ブロック/数式）に合わせて候補を変更
+        *** 数式モードではインラインコマンドが出ない、逆も然り
+      ** 宣言時にシグニチャが明示されていればそれを活用
+        *** 補完候補の詳細画面に表示
+        *** シグネチャの型に合わせてスニペット展開
+  }
+
+>
+
++frame{機能1：補完機能}<
+
+  +listing{
+    * 変数名の補完
+
+      ** 編集中のファイル、又は require/import しているパッケージ内で定義された変数を補完
+
+      ** 現在のモードがプログラムモードのときに表示
+        *** インライン/ブロック/数式モードでは表示されない
+
+      ** 宣言時にシグニチャが明示されていればそれを活用
+        *** 補完候補の詳細画面に表示
+        *** スニペット展開は行わない（部分適用の可能性があるため）
+
+      ** プリミティヴも補完の対象
+
+      ** プリアンブルで宣言された変数のみ対象（ `let in` 式束縛などは対象外）
+
+  }
+
+>
+
++frame?:(3){機能1：補完機能}<
+
+  +listing{
+    * コマンド名の補完
+  }
+
+  +fig-center( select (fun i -> ( match i with
+    | 1 -> include-image 600pt (`fig/jpg/completion-command-1.jpg`)
+    | 2 -> include-image 600pt (`fig/jpg/completion-command-2.jpg`)
+    | 3 -> include-image 600pt (`fig/jpg/completion-command-3.jpg`)
+  )));
+
+>
+
++frame{機能1：補完機能}<
+
+  +listing{
+    * 変数名の補完
+  }
+
+  +fig-center(include-image 600pt `fig/jpg/completion-variable-1.jpg`);
+
+>
+
++againframe(`functions`);
+
++frame?:(2){機能2：定義ジャンプ}<
+
+  +listing{
+    * コマンドや変数の定義箇所にジャンプできる機能
+  }
+
+    +fig-center( select (fun i -> (
+      match i with
+      | 1 -> include-image 600pt (`fig/jpg/gotodefinition-1.jpg`)
+      | 2 -> include-image 600pt (`fig/jpg/gotodefinition-2.jpg`)
+    )));
+
+  +ghost(only 2)<
+    +listing{
+      * 別ファイルで定義されていてもそこにジャンプする
+    }
+  >
+
+>
+
++againframe(`functions`);
+
++frame{機能3：ホバー}<
+
+  +listing{
+    * コマンドや変数の情報を参照できる機能
+      ** 型がユーザにより明示されている場合は型も表示
+  }
+
+  +fig-center(include-image 600pt `fig/jpg/dohover-1.jpg`);
+
+>
+
++frame{機能3：診断情報の表示}<
+
+  +listing{
+    * 構文解析がエラーとなったときにエラー箇所と原因を表示
+      ** いくつかのエラーについては具体的なエラー原因を表示
+      ** パーサの手に負えないものはエラー箇所と期待される字句のみ表示
+
+  }
+
+  +fig-center(include-image 600pt `fig/jpg/diagnostics-1.jpg`);
+
+>
+
++frame{\SATySFi; Language Server の実装}<
+
+  +listing{
+    * 実装言語：\Rust;
+
+    * 理由：
+      ** Rust を学びたかった
+      ** 優れたパフォーマンス・省メモリ性・安全性に惹かれた
+      ** 静的型付け言語であること由来の書きやすさに惹かれた
+      ** Rust で書かれた代表的な言語サーバが複数あった
+
+         \fig-block?:(0.)(textbox ?:(set-font-size-ratio 0.85) {
+           \easytable?:[stripe; t; b][l; l]{
+             | Rust
+             | \link?:({rust-analyzer})(`https://github.com/rust-analyzer/rust-analyzer`);
+             | Deno
+             | \link?:({Deno Language Server})(`https://github.com/denoland/deno/tree/main/cli/lsp#deno-language-server`);
+             | \LaTeX;
+             | \link?:({TexLab})(`https://github.com/latex-lsp/texlab`);
+             |}
+
+         });
+  }
+>
+
++frame{実装：パーサ}<
+  +listing{
+    * parsing expression grammar (PEG) パーサを使用
+      ** \link?:({rust-peg})(`https://crates.io/crates/peg`); を使用
+    * 現在は字句解析と構文解析を同時に行う
+      ** エラー回復やカーソル位置のモードの把握に難あり
+  }
+>
+
++frame{実装：言語サーバ概観}<
+  +listing{
+    * `lspower` を使用
+      ** `lsp-types` などが使いやすい
+    * 文書構造として、構文木だけでなく
+      各ファイルで定義されている変数、コマンド、型、モジュールなどの情報を保持
+  }
+>
+
++frame{実装：各リクエストに対する処理の流れ}<
+  +listing{
+    * ファイルが開かれたとき/変更されたとき (didOpen/didChange)
+      ** ファイルを構文解析し、成功したらそのファイルの `Environment` を作成
+      ** 依存ファイル (`@require` / `@import`) のうち未解析のものがあれば解析し、
+         成功すれば先程と同様に `Environment` を作成
+    * 補完リクエストがあったとき (completion)
+      ** 
+  }
+>
+
+>%
+
++section{| \SATySFi; Language Server の | 今後の課題と発展性 |}<%
+
++frame{\SATySFi; と Language Server の相性}<
+
+  +listing{
+    * 基本的に、静的型付け言語と LSP は相性が良い
+      ** 静的解析で型が判明することにより、賢い補完や診断情報をユーザに提示できるため
+      ** \SATySFi; も例外ではない
+
+    * 開発者の実力とリソースさえ揃えば、かなり便利な機能が実現できる
+      ** \TeX; や \LaTeX; にはない \SATySFi; の強み
+  }
+  
+>
+
++frame{型検査・型推論の追加}<
+
+  +listing{
+    * まだ型検査・型推論器は実装されていない
+
+    * 変数・コマンドの型推論・型検査によって実現できそうなこと
+
+      ** 型エラーの診断情報表示
+
+      ** シグニチャの無いコマンド・変数の補完、詳細情報表示
+
+      ** レコードのフィールド名での補完候補の絞り込み
+
+      ** パイプライン演算子直後の補完候補の絞り込み
+
+      ** etc.
+  }
+
+>
+
+
++frame{補完の改善}<
+
+  +listing{
+    * パーサのエラー回復機構をより強力にする
+      ** パーサが回復不能な構文エラーが起きると、適切な補完候補が出せない
+        *** 現在のモード（プログラムモード・水平モード・垂直モードなど）や依存パッケージが分からないため
+
+      ** しかし「ユーザの入力途中」のテキストはたいてい構文エラー
+
+      ** そのため現在はユーザの入力途中でもある程度パーサが対処できるように書いているが、完璧ではない
+
+      ** ユーザの入力途中でもエラー回復可能、またはカーソル位置のモードや依存ファイルの情報を取得できるパーサへと改良する
+  }
+
+>
+
+% +frame{賢い diagnostics}<
+% 
+%   +listing{
+%     * パッケージのパスが存在しないときエラーを表示する
+%     % * 特定の著名パッケージや特定の使い方を仮定した診断情報
+%     %   ** そのままでは静的解析が難しくとも、特定のコマンドが使われていることなどを仮定すれば可能なことがある
+%     %   ** 具体例
+%     %     *** フォント名や画像ファイル名のパスが解決できないときエラーを表示する
+%     %     *** reference が存在しない時エラーを表示する
+%   }
+% >
+
++frame{その他の発展性}<
+
+  +listing{
+    * doc comment のホバー表示
+      ** 現在
+         \link?:({doc comment 機能})(`https://github.com/gfngfn/SATySFi/wiki/%E8%BF%BD%E5%8A%A0%E3%81%97%E3%81%9F%E3%81%84%E6%A9%9F%E8%83%BD%E3%81%A8%E3%81%9D%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8#2020-03-22-doc-comment`);
+         が本家で構想されている
+
+    * Auto import
+      ** コマンド補完の際やコードアクションによって必要な依存を自動解決
+      ** 予め `~/.satysfi/dist/packages` などの全ファイルを見ておけば可能
+
+    * コードアクション
+      ** 未定義のコマンドがあるとき、その定義の雛形をプリアンブルに追加
+      ** 定義した関数・コマンドのシグニチャをモジュールの `sig` に追加
+
+  }
+>
+
+
+>%
+
++section{|まとめ|}<
+
++frame{まとめ}<
+    +listing{
+      * \SATySFi; language server を開発中
+        ** 補完機能、
+    }
+  >
+
+>
+
+
+
+>
