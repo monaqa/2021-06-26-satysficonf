@@ -4,6 +4,7 @@
 @require: easytable/easytable
 @require: annot
 @require: base/typeset/base
+@require: math
 
 open FigBox
 open EasyTableAlias
@@ -77,6 +78,9 @@ let-block ctx +emphbox it =
   in
   read-block ctx '<+fig-center(fbf wid);>
 
+let-block ctx +pass =
+  let () = display-message `pass!` in
+  block-nil
 
 
 in
@@ -116,35 +120,76 @@ document '<
 
 +frame{今までに作った \SATySFi; 関連のプログラム}<
 
-  +description{
-    * \textbf{satysfi-enumitem} \budge-satysfi-package;
-      ** 豊富なスタイルの箇条書きを組むためのパッケージ
-    * \textbf{\SLyDIFi;} \budge-satysfi-classfile;
-      ** スライド作成のためのクラスファイル（\textbf{このスライドも\SLyDIFi;製}）
-    * \textbf{satysfi-easytable} \budge-satysfi-package;
-      ** シンプルな表を簡単に組むためのパッケージ
-    * \textbf{satysfi-azmath} \budge-satysfi-package;
-      ** アクセント、括弧類、
-         \LaTeX; の \link?:({amsmath})(`https://www.ctan.org/pkg/amsmath`);
-         と似た数式環境などを提供するパッケージ
+  +listing{
+    * \SATySFi; パッケージ・クラスファイル
+
+      \fig-center(textbox ?:(set-font-size-ratio 0.8) {
+        \easytable?:[stripe; t; b;][c; l]{
+          | \link?:({\textbf{\SLyDIFi;}})(`https://github.com/monaqa/slydifi`);
+          | スライド作成用のクラスファイル（\textbf{本スライドも \SLyDIFi; 製}）
+          | \link?:({\textbf{easytable}})(`https://github.com/monaqa/satysfi-easytable`);
+          | シンプルな記法で書ける表組版（\link?:({\SATySFi; Conf 2020})(`https://connpass.com/event/174844/`); で発表）
+          | \link?:({\textbf{figbox}})(`https://github.com/monaqa/satysfi-figbox`);
+          | 柔軟な図表の配置
+          | \link?:({\textbf{railway}})(`https://github.com/monaqa/satysfi-railway`);
+          | グラフィックスの作成支援
+          | \link?:({\textbf{enumitem}})(`https://github.com/monaqa/satysfi-enumitem`);
+          | 豊富なスタイルの箇条書き
+          | \link?:({\textbf{AZMath}})(`https://github.com/monaqa/satysfi-azmath`);
+          | アクセント、括弧、\link?:({amsmath})(`https://www.ctan.org/pkg/amsmath`); ライクな数式環境
+          |}
+      });
+
+    * その他
+
+      \fig-center(textbox ?:(set-font-size-ratio 0.8) {
+        \easytable?:[stripe; t; b;][c; l]{
+          | \link?:({\textbf{satysfi-parser}})(`https://github.com/monaqa/satysfi-parser`);
+          | Rust 製の \SATySFi; パーサ
+          | \link?:({\emph{satysfi-language-server}})(`https://github.com/monaqa/satysfi-language-server`);
+          | Rust 製の \SATySFi; 言語サーバ（\textbf{今日のお話}）
+          |}
+      });
   }
+
 
 >
 
-+frame{今までに作った \SATySFi; 関連のプログラム}<
-
-  +description{
-    * \textbf{satysfi-figbox} \budge-satysfi-package;
-      ** 図表を自由に組み合わせ、適切な場所に配置するためのパッケージ
-    * \textbf{satysfi-railway} \budge-satysfi-package;
-      ** グラフィックスを描きやすくするためのパッケージ
-    * \textbf{satysfi-parser} \budge-rust-program;
-      ** Parsing expression grammar (PEG) を使用した \SATySFi; のパーサ
-    * \emph{satysfi-language-server} \budge-rust-program;
-      ** \SATySFi; の言語サーバ
-  }
-
->
+% +frame{今までに作った \SATySFi; 関連のプログラム}<
+% 
+%   +fig-center(textbox ?:(set-font-size-ratio 0.8) {
+% 
+%   });
+% 
+%   +description{
+%     * \textbf{satysfi-enumitem} \budge-satysfi-package;
+%       ** 豊富なスタイルの箇条書きを組むためのパッケージ
+%     * \textbf{\SLyDIFi;} \budge-satysfi-classfile;
+%       ** スライド作成のためのクラスファイル（\textbf{このスライドも\SLyDIFi;製}）
+%     * \textbf{satysfi-easytable} \budge-satysfi-package;
+%       ** シンプルな表を簡単に組むためのパッケージ
+%     * \textbf{satysfi-azmath} \budge-satysfi-package;
+%       ** アクセント、括弧類、
+%          \LaTeX; の \link?:({amsmath})(`https://www.ctan.org/pkg/amsmath`);
+%          と似た数式環境などを提供するパッケージ
+%   }
+% 
+% >
+% 
+% +frame{今までに作った \SATySFi; 関連のプログラム}<
+% 
+%   +description{
+%     * \textbf{satysfi-figbox} \budge-satysfi-package;
+%       ** 図表を自由に組み合わせ、適切な場所に配置するためのパッケージ
+%     * \textbf{satysfi-railway} \budge-satysfi-package;
+%       ** グラフィックスを描きやすくするためのパッケージ
+%     * \textbf{satysfi-parser} \budge-rust-program;
+%       ** Parsing expression grammar (PEG) を使用した \SATySFi; のパーサ
+%     * \emph{satysfi-language-server} \budge-rust-program;
+%       ** \SATySFi; の言語サーバ
+%   }
+% 
+% >
 
 +namedframe(`toc`){目次}<
   +listing{
@@ -168,16 +213,16 @@ document '<
 >
 
 % +frame{Language Server Protocol (LSP)}<
-% 
+%
 %   +p{
 %     言語サーバとクライアントは LSP という通信仕様に従って通信する。
 %   }
-% 
+%
 %   +fig-center(
 %     include-image 600pt `fig/jpg/language-server-sequence.jpg`
 %       |> add-caption { \link(`https://microsoft.github.io/language-server-protocol/overviews/lsp/overview/`); }
 %   );
-% 
+%
 % >
 
 +frame{Language Server（言語サーバ）}<
@@ -191,18 +236,23 @@ document '<
   }
 
   +fig-center(textbox ?:(set-font-size-ratio 0.8) {
-    \easytable?:[stripe; t; b; v 1;][lw 160pt; lw 400pt]{
-      | 補完 (completion)
+    \easytable?:[stripe; t; b; v 1;]
+    ?:[
+      set-fmt-range (5, 0) (5, 1) c;
+    ][l; lw 460pt]{
+      | \textbf{補完} % (completion)
       | ユーザが挿入しようとしている変数名・メソッド名などを予測して候補を表示する \br;
       （挿入内容に応じスニペットを展開する場合も）
-      | 詳細表示 (hover)
+      | \textbf{詳細表示} % (hover)
       | カーソル上の変数・関数の型情報やドキュメンテーションなどを表示する
-      | 定義ジャンプ\br; (goToDefinition)
+      | \textbf{定義ジャンプ} %\br; (goToDefinition)
       | カーソル上の変数が定義されている場所に移動する
-      | リネーム (rename)
+      | \textbf{リネーム} % (rename)
       | カーソル上の変数名を変更する
-      | コードアクション\br; (code action)
-      | 言語に応じて様々な操作を実行する（対応するモジュールのインポート、getter/setter の自動作成など）
+      | \textbf{コードアクション} % \br; (code action)
+      | 言語に応じて様々な処理を実行する（カーソル下にあるモジュールのインポート、getter/setter の自動作成など）
+      | ${\vdots}
+      | ${\vdots}
       |}
   } |> vmargin 0pt);
 
@@ -222,7 +272,7 @@ document '<
   %   );
 
   +listing{
-    * \select(till 2){LSP の登場前}{LSP の登場後}
+    * \select(till 2){LSP の登場前}{LSP の登場\emph{後}}
       ** \embed(select (fun i -> (match i with
          | 1 -> {エディタ・言語毎に各々プラグインや拡張を作る必要があった}
          | 2 -> {マイナーなエディタ・言語では使用者が少なく実装も進まない}
@@ -249,7 +299,7 @@ document '<
 
 +frame{ \SATySFi; Language Server }<
   +listing{
-    * このリポジトリで開発中 (WIP!)
+    * 以下の GitHub リポジトリで開発中 (WIP!)
 
       \fig-block?:(align-left)(
         textbox {
@@ -259,32 +309,80 @@ document '<
         }
       );
 
-
-    % * パーサは別リポジトリで管理
-    % 
-    %   \fig-block?:(align-left)(
-    %     textbox {
-    %       \link?:({
-    %         \fig-inline(include-image 400pt `fig/pdf/satysfi-parser.pdf`);
-    %       })(`https://github.com/monaqa/satysfi-parser`);
-    %     }
-    %   );
-
-    * 現在、
-      \link?:({Neovim})(`https://github.com/neovim/neovim`); + \link?:({coc.nvim})(`https://github.com/neoclide/coc.nvim`);
-      という組合せのクライアントで動作を確認
-      ** VSCode や emacs などのエディタで試せる方の貢献をお待ちしています
+    * 現在動作を確認しているクライアント
+      ** \link?:({Neovim})(`https://github.com/neovim/neovim`); + \link?:({coc.nvim})(`https://github.com/neoclide/coc.nvim`);
+         （本スライドの作成にも使用）
+      ** \link?:({Visual Studio Code})(`https://code.visualstudio.com`);（拡張機能のデバッグモードでのみ）
+        *** 本スライドでは利用者が多いであろう VSCode でのデモの様子を掲載
+        *** ちゃんとした VSCode の拡張をどなたか作ってもらえると助かります
 
   }
 >
 
 +namedframe(`functions`){現在提供している機能\ghost(after 3){（再掲）}}<
   +listing{
-    * \emph?:(in-case [2]){\weak?:(in-case [3; 4; 5]){補完}}
-    * \emph?:(in-case [3]){\weak?:(in-case [2; 4; 5]){定義ジャンプ}}
-    * \emph?:(in-case [4]){\weak?:(in-case [2; 3; 5]){ホバー}}
-    * \emph?:(in-case [5]){\weak?:(in-case [2; 3; 4]){診断情報の表示}}
+    * \emph?:(only 2){\weak?:(fun i -> elsewhen 1 i && elsewhen 2 i){診断情報の表示}}
+    * \emph?:(only 3){\weak?:(fun i -> elsewhen 1 i && elsewhen 3 i){詳細情報のホバー表示}}
+    * \emph?:(only 4){\weak?:(fun i -> elsewhen 1 i && elsewhen 4 i){定義ジャンプ}}
+    * \emph?:(only 5){\weak?:(fun i -> elsewhen 1 i && elsewhen 5 i){補完}}
   }
+>
+
++againframe(`functions`);
+
++frame{診断情報の表示}<
+
+  +emphbox{
+    構文エラーの箇所と原因を表示
+  }
+
+  +fig-center(include-image 540pt `fig/jpg/vscode-diagnostics-1.jpg`);
+
+  +listing{
+    * いくつかのエラーについては具体的なエラー原因を表示
+    * パーサの手に負えないものはエラー箇所と期待される字句のみ表示
+  }
+
+>
+
++againframe(`functions`);
+
++frame?:(2){詳細情報のホバー表示}<
+
+  +emphbox{
+    変数やコマンドにカーソルを合わせると、その詳細を表示
+      % ** 型がユーザにより明示されている場合は型も表示
+  }
+
+  +fig-center(vconcat ?:align-center [
+    select (fun i -> (
+      match i with
+      | 1 -> include-image 600pt `fig/jpg/vscode-hover-1.jpg`
+      | 2 -> include-image 600pt `fig/jpg/vscode-hover-2.jpg`
+    ));
+    gap 10pt;
+    textbox {
+      （現在は変数/コマンドの種類と、判明しているもののみ型情報を表示）
+    }
+  ]);
+
+>
+
++againframe(`functions`);
+
++frame?:(3){定義ジャンプ}<
+
+  +emphbox{
+    コマンドや変数の定義にジャンプ（ファイルを跨いでも有効）
+  }
+
+    +fig-center( select (fun i -> (
+      match i with
+      | 1 -> include-image 600pt `fig/jpg/vscode-gotodefinition-1.jpg`
+      | 2 -> include-image 600pt `fig/jpg/vscode-gotodefinition-2.jpg`
+      | 3 -> include-image 600pt `fig/jpg/vscode-gotodefinition-3.jpg`
+    )));
+
 >
 
 +againframe(`functions`);
@@ -295,21 +393,29 @@ document '<
     ユーザが示す文字列に続く名前のコマンドを候補に表示
   }
 
-  +fig-center( select (fun i -> ( match i with
-    | 1 -> include-image 600pt (`fig/jpg/completion-command-1.jpg`)
-    | 2 -> include-image 600pt (`fig/jpg/completion-command-2.jpg`)
-    | 3 -> include-image 600pt (`fig/jpg/completion-command-3.jpg`)
-  )));
+  +fig-center(vconcat ?:align-center [
+    select (fun i -> (
+      match i with
+      | 1 -> include-image 600pt `fig/jpg/vscode-completion-1.jpg`
+      | 2 -> include-image 600pt `fig/jpg/vscode-completion-2.jpg`
+      | 3 -> include-image 600pt `fig/jpg/vscode-completion-3.jpg`
+    ));
+    gap 10pt;
+    textbox {（ソースコードを読んで補完候補を生成）}
+  ]);
 
 >
 
-+frame{変数名の補完}<
++frame?:(2){変数名の補完}<
 
   +emphbox{
     プログラムモードでは変数や関数名も補完できる
   }
 
-  +fig-center(include-image 660pt `fig/jpg/completion-variable-1.jpg`);
+  +fig-center( select (fun i -> ( match i with
+    | 1 -> include-image 600pt `fig/jpg/vscode-completion-4.jpg`
+    | 2 -> include-image 600pt `fig/jpg/vscode-completion-5.jpg`
+  )));
 
 >
 
@@ -324,13 +430,13 @@ document '<
       vconcat ?:align-center [
         textbox {プログラムモードのとき};
         gap 15pt;
-        include-image 260pt `fig/jpg/completion-command-invalid-1.jpg`
+        include-image 310pt `fig/jpg/vscode-completion-invalid-2.jpg`
       ];
-      sep ?:(stroke-line 2pt (SlydifiThemeArctic.config#color#separator)) 80pt;
+      sep ?:(stroke-line 2pt (SlydifiThemeArctic.config#color#separator)) 40pt;
       vconcat ?:align-center [
         textbox {水平モードのとき};
         gap 15pt;
-        include-image 260pt `fig/jpg/completion-command-invalid-2.jpg`
+        include-image 310pt `fig/jpg/vscode-completion-invalid-1.jpg`
       ]
     ]
   );
@@ -347,45 +453,53 @@ document '<
 
   +select(only 1)<
     +fig-center(
-      hconcat [
-        vconcat ?:align-center [
-          textbox {例: `\easytable` コマンド};
-          gap 10pt;
-          textbox ?:(set-font-size-ratio 0.8) { `[cellfmt list; inline-text list]` 型の};
-          gap 4pt;
-          textbox ?:(set-font-size-ratio 0.8) { 引数をとるインラインコマンド };
-          gap 15pt;
-          include-image 300pt `fig/jpg/completion-command-snippet-1.jpg`
-        ];
-        sep ?:(stroke-line 2pt (SlydifiThemeArctic.config#color#separator)) 30pt;
-        vconcat ?:align-center [
-          textbox {例: `+section` コマンド};
-          gap 10pt;
-          textbox ?:(set-font-size-ratio 0.8) { `[inline-text list; block-text]` 型の };
-          gap 4pt;
-          textbox ?:(set-font-size-ratio 0.8) { 引数をとるブロックコマンド };
-          gap 15pt;
-          include-image 300pt `fig/jpg/completion-command-snippet-2.jpg`
-        ]
+      % hconcat [
+      %   vconcat ?:align-center [
+      %     textbox {例: `\easytable` コマンド};
+      %     gap 10pt;
+      %     textbox ?:(set-font-size-ratio 0.8) { `[cellfmt list; inline-text list]` 型の};
+      %     gap 4pt;
+      %     textbox ?:(set-font-size-ratio 0.8) { 引数をとるインラインコマンド };
+      %     gap 15pt;
+      %     include-image 300pt `fig/jpg/completion-command-snippet-1.jpg`
+      %   ];
+      %   sep ?:(stroke-line 2pt (SlydifiThemeArctic.config#color#separator)) 30pt;
+      %   vconcat ?:align-center [
+      %     textbox {例: `+section` コマンド};
+      %     gap 10pt;
+      %     textbox ?:(set-font-size-ratio 0.8) { `[inline-text list; block-text]` 型の };
+      %     gap 4pt;
+      %     textbox ?:(set-font-size-ratio 0.8) { 引数をとるブロックコマンド };
+      %     gap 15pt;
+      %     include-image 300pt `fig/jpg/completion-command-snippet-2.jpg`
+      %   ]
+      % ]
+
+      vconcat [
+        include-image 600pt `fig/jpg/vscode-completion-snippet-1.jpg`;
+
+        gap 20pt;
+
+        include-image 600pt `fig/jpg/vscode-completion-snippet-2.jpg`;
       ]
     );
   ><
     +fig-center(textbox ?:(set-font-size-ratio 0.9) {
       \easytable[c; c]{
-        | 型 | スニペット展開結果
-        | `inline-text` | `{}`
-        | `block-text`  | `<  >`
-        | `inline-text list` | `{||}`
-        | その他の `list` | `[]`
-        | その他の型        | `()`
+        |型                |スニペット展開結果
+        |`inline-text`     |`{}`
+        |`block-text`      |`<  >`
+        |`inline-text list`|`{| |}`
+        |その他の `list`   |`[];`
+        |その他の型        |`();`
         |}
-      });
+    });
   >
 
 >
 
 % +frame{機能1：補完機能（詳細）}<
-% 
+%
 %   +listing{
 %     * コマンド名の補完
 %       ** 編集中のファイル、又は require/import しているパッケージ内で定義されたコマンドを補完
@@ -395,87 +509,31 @@ document '<
 %         *** 補完候補の詳細画面に表示
 %         *** シグネチャの型に合わせてスニペット展開
 %   }
-% 
+%
 % >
-% 
+%
 % +frame{機能1：補完機能（詳細）}<
-% 
+%
 %   +listing{
 %     * 変数名の補完
-% 
+%
 %       ** 編集中のファイル、又は require/import しているパッケージ内で定義された変数を補完
-% 
+%
 %       ** 現在のモードがプログラムモードのときに表示
 %         *** インライン/ブロック/数式モードでは表示されない
-% 
+%
 %       ** 宣言時にシグニチャが明示されていればそれを活用
 %         *** 補完候補の詳細画面に表示
 %         *** スニペット展開は行わない（部分適用の可能性があるため）
-% 
+%
 %       ** プリミティヴも補完の対象
-% 
+%
 %       ** プリアンブルで宣言された変数のみ対象（ `let in` 式束縛などは対象外）
-% 
+%
 %   }
-% 
+%
 % >
 
-
-+againframe(`functions`);
-
-+frame?:(2){定義ジャンプ}<
-
-  +emphbox{
-    コマンドや変数の定義箇所にジャンプ
-  }
-
-    +fig-center( select (fun i -> (
-      match i with
-      | 1 -> include-image 600pt (`fig/jpg/gotodefinition-1.jpg`)
-      | 2 -> include-image 600pt (`fig/jpg/gotodefinition-2.jpg`)
-    )));
-
-  +ghost(only 2)<
-    +listing{
-      * 別ファイルで定義されていてもそこにジャンプする
-    }
-  >
-
->
-
-+againframe(`functions`);
-
-+frame{ホバー}<
-
-  +emphbox{
-    コマンドや変数の情報を参照
-      % ** 型がユーザにより明示されている場合は型も表示
-  }
-
-  +fig-center(include-image 600pt `fig/jpg/dohover-1.jpg`);
-
-  +listing{
-    * 型がユーザにより明示されている場合は型も表示
-  }
-
->
-
-+againframe(`functions`);
-
-+frame{診断情報の表示}<
-
-  +emphbox{
-    構文解析がエラーとなったときにエラー箇所と原因を表示
-  }
-
-  +fig-center(include-image 540pt `fig/jpg/diagnostics-1.jpg`);
-
-  +listing{
-    * いくつかのエラーについては具体的なエラー原因を表示
-    * パーサの手に負えないものはエラー箇所と期待される字句のみ表示
-  }
-
->
 
 +frame{\SATySFi; Language Server の実装}<
 
@@ -527,14 +585,14 @@ document '<
     * `DocumentData` 構造体にファイルの内容を保持
       ** ファイルの文字列
       ** 構文木
-      ** 環境
-        % *** モジュール（名前、定義の位置）
-        % *** 変数（名前、型情報、定義の位置）
-        % *** コマンド（名前、型情報、定義の位置）
+      ** \textbf{環境} (`Environment`)
+        *** モジュール（名前、定義の位置）
+        *** 変数（名前、型情報、定義の位置）
+        *** コマンド（名前、型情報、定義の位置）
 
-         \fig-block?:(align-left)(textbox ?:(set-font-size-ratio 0.8) {
-           \easytable[]{||}
-         });
+         % \fig-block?:(align-left)(textbox ?:(set-font-size-ratio 0.8) {
+         %   \easytable[]{||}
+         % });
   }
 >
 
@@ -542,13 +600,14 @@ document '<
   +listing{
     * ファイルが開かれたとき/変更されたとき (didOpen/didChange)
       ** ファイルを構文解析し、成功したらそのファイルの `Environment` を作成
-      ** 依存ファイル (`@require` / `@import`) のうち未解析のものがあれば解析し、
-         成功すれば先程と同様に `Environment` を作成
+      ** 未解析の依存パッケージ (`@require: xxxx` / `@import: xxxx`) を構文解析し、
+         成功すれば先程同様 `Environment` を作成
     * 補完リクエストがあったとき (completion)
-      ** カーソル位置のモード（水平モード、数式モードなど）の情報を構文木から取得
+      ** カーソル位置のモード（水平モード、数式モードなど）を構文木から取得
       ** そのモードに出現しうる変数/コマンドのうち、
-         スコープが有効なものを `Environment` から検索
-      ** 適切なものをリストにして返却
+         カーソル位置をスコープに含むものを `Environment` から検索
+      ** 得られた変数/コマンドを返却
+        *** コマンドの場合、型情報があればスニペットを作成
   }
 >
 
@@ -556,20 +615,57 @@ document '<
 
 +section{| \SATySFi; Language Server の | 今後の課題と発展性 |}<%
 
-+frame{\SATySFi; と Language Server の相性}<
++frame{\SATySFi; with Language Server の感触}<
 
   +listing{
     * 基本的に、静的型付け言語と LSP は相性が良い
-      ** 静的解析で型が判明することにより、賢い補完や診断情報をユーザに提示できるため
-      ** \SATySFi; も例外ではない
+      ** 静的解析で型が判明すれば賢い補完や診断情報をユーザに提示できるため
+      ** 動的型付け言語に型注釈を付ける動きもあるほど
 
-    * 開発者の実力とリソースさえ揃えば、かなり便利な機能が実現できる
-      ** \TeX; や \LaTeX; にはない \SATySFi; の強み
+    * \SATySFi; も例外ではない
+
+      ** モードに応じた補完候補の出し分け、型に応じたスニペットの出し分けなどで開発体験の向上
+
+      ** \SATySFi; に不慣れな初心者ほど恩恵が大きい
+
+      ** 開発者の実力とリソースさえ揃えば、かなり便利な機能が実現できる
   }
-  
+
 >
 
-+frame{型検査・型推論の追加}<
++frame{課題：エラー回復機構が強力なパーサ}<
+
+  +listing{
+    * \textbf{エラー回復}：文法の誤りを含むコードを適切に処理すること
+      ** 言語サーバが処理するテキストには文法エラーが高確率で含まれる
+        *** 例：補完リクエスト時に送られる、入力途中のテキスト
+
+      ** ちゃんとやるのはかなり難しい
+        *** 文法には規則があるが、誤りには一般に規則がない
+
+      ** 最低限必要なエラー回復処理はすでに実装
+        *** 不完全なコマンド文法への対処など
+
+    * 現時点では、1つでも回復不能なエラーがあると情報を全く取れなくなる
+      ** カーソル位置のモードや依存パッケージぐらいは取りたい
+
+  }
+
+  % +listing{
+  %   * パーサの\textbf{エラー回復機構}をより強力にする
+  %     ** パーサが回復不能な構文エラーが起きると、適切な補完候補が出せない
+  %       *** 現在のモード（プログラムモード・水平モード・垂直モードなど）や依存パッケージが分からないため
+  % 
+  %     ** しかし「ユーザの入力途中」のテキストはたいてい構文エラー
+  % 
+  %     ** そのため現在はユーザの入力途中でもある程度パーサが対処できるように書いているが、完璧ではない
+  % 
+  %     ** ユーザの入力途中でもエラー回復可能、またはカーソル位置のモードや依存ファイルの情報を取得できるパーサへと改良する
+  % }
+
+>
+
++frame{課題：型検査・型推論の追加}<
 
   +listing{
     * まだ型検査・型推論器は実装されていない
@@ -578,7 +674,7 @@ document '<
 
       ** 型エラーの診断情報表示
 
-      ** シグニチャの無いコマンド・変数の補完、詳細情報表示
+      ** シグニチャが明記されていないコマンド・変数の補完、詳細情報表示
 
       ** レコードのフィールド名での補完候補の絞り込み
 
@@ -590,24 +686,9 @@ document '<
 >
 
 
-+frame{補完の改善}<
-
-  +listing{
-    * パーサの\textbf{エラー回復機構}をより強力にする
-      ** パーサが回復不能な構文エラーが起きると、適切な補完候補が出せない
-        *** 現在のモード（プログラムモード・水平モード・垂直モードなど）や依存パッケージが分からないため
-
-      ** しかし「ユーザの入力途中」のテキストはたいてい構文エラー
-
-      ** そのため現在はユーザの入力途中でもある程度パーサが対処できるように書いているが、完璧ではない
-
-      ** ユーザの入力途中でもエラー回復可能、またはカーソル位置のモードや依存ファイルの情報を取得できるパーサへと改良する
-  }
-
->
 
 % +frame{賢い diagnostics}<
-% 
+%
 %   +listing{
 %     * パッケージのパスが存在しないときエラーを表示する
 %     % * 特定の著名パッケージや特定の使い方を仮定した診断情報
@@ -621,17 +702,17 @@ document '<
 +frame{その他の発展性}<
 
   +listing{
-    * Doc comment のホバー表示・補完の詳細画面での表示
+    * \textbf{Doc comment} のホバー表示・補完の詳細画面での表示
       ** 現在
          \link?:({doc comment 機能})(`https://github.com/gfngfn/SATySFi/wiki/%E8%BF%BD%E5%8A%A0%E3%81%97%E3%81%9F%E3%81%84%E6%A9%9F%E8%83%BD%E3%81%A8%E3%81%9D%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8#2020-03-22-doc-comment`);
          が本家で構想されている
       ** コマンドの使い方がコマンド入力時に分かる
 
-    * Auto import
+    * \textbf{Auto import}
       ** コマンド補完の際やコードアクションによって必要な依存を自動解決
       ** 予め `~/.satysfi/dist/packages` などの全ファイルを見ておけば可能
 
-    * Code action （言語ならではの特別な編集操作を実現する機能）
+    * \textbf{Code action} （言語ならではの特別な編集操作を実現する機能）
       ** 未定義のコマンドがあるとき、その定義の雛形をプリアンブルに追加
       ** モジュール内で定義した関数・コマンドのシグニチャを `sig` に追加
 
@@ -641,18 +722,18 @@ document '<
 
 >%
 
-+section-noframe?:({まとめ})<
++section-noframe<
 
 +frame{まとめ}<
     +listing{
       * \SATySFi; language server を開発中
-        ** 補完機能、定義ジャンプ、ホバー、エラーの表示がある程度可能になった
-          *** 現在のモードやシグネチャの型によって候補の出し分けなどが可能
+        ** 補完機能、定義ジャンプ、ホバー、エラーの表示などの機能を実装
         ** \link?:({Neovim})(`https://github.com/neovim/neovim`);
-           + \link?:({coc.nvim})(`https://github.com/neoclide/coc.nvim`); の組合せで動作確認
-
+           + \link?:({coc.nvim})(`https://github.com/neoclide/coc.nvim`); や
+           \link?:({Visual Studio Code})(`https://code.visualstudio.com`); 上で動く
       * 今後も様々な発展性が考えられる
-        ** 型推論が可能になればより頭の良いサポートが可能
+        ** エラー回復機構の強力なパーサ
+        ** 型推論・型検査器
         ** その他、Doc comment や Auto import など
 
     }
@@ -672,7 +753,7 @@ document '<
       +listing{
         * 是非使ってみてください！
       }
-      
+
     >
 
   >
