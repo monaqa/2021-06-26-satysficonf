@@ -57,13 +57,13 @@ document '<
         ** Twitter: \link?:({\@mo_naqa})(`https://twitter.com/mo_naqa`);
         ** GitHub: \link?:({monaqa})(`https://github.com/monaqa`);
 
-      * \SATySFi; 歴：2年ぐらい
-
       * 技術系コミュニティ所属
 
         ** \SATySFi; Slack
         ** vim-jp Slack
         ** Rust-jp Slack
+
+      * \SATySFi; 歴：2年ぐらい
     }
   >%
 >
@@ -97,7 +97,7 @@ document '<
           | \link?:({\textbf{satysfi-parser}})(`https://github.com/monaqa/satysfi-parser`);
           | Rust 製の \SATySFi; パーサ
           | \link?:({\emph{satysfi-language-server}})(`https://github.com/monaqa/satysfi-language-server`);
-          | Rust 製の \SATySFi; 言語サーバ（\textbf{今日のお話}）
+          | Rust 製の \SATySFi; language server（\textbf{今日のお話}）
           |}
       });
   }
@@ -143,9 +143,10 @@ document '<
 
 +namedframe(`toc`){目次}<
   +listing{
-    * \weak?:(in-case [3; 4]){Language Server Protocol}
-    * \weak?:(in-case [2; 4]){\SATySFi; Language Server の現状}
-    * \weak?:(in-case [2; 3]){\SATySFi; Language Server の今後}
+    * Language Server Protocol
+    * \SATySFi; Language Server の現状
+    * \SATySFi; Language Server の実装
+    * \SATySFi; Language Server の今後の課題と発展性
   }
 >
 
@@ -472,17 +473,41 @@ document '<
 %
 % >
 
-
-+frame{\SATySFi; Language Server の実装}<
++frame{\SATySFi; Language Server の使用感}<
 
   +listing{
-    * 実装言語：\Rust;
+    * 基本的に、静的型付け言語と LSP は相性が良い
+      ** 静的解析で型が判明すれば賢い補完や診断情報をユーザに提示できるため
+      % ** 動的型付け言語に型注釈を付ける動きもあるほど
 
-    * 理由
+    * \SATySFi; も例外ではない
+
+      % ** モードに応じた補完候補の出し分け、型に応じたスニペットの出し分けなどで開発体験の向上
+      ** 変数やコマンドに型が付くことで開発体験が向上する
+        *** モードに応じた補完候補の出し分け
+        *** 型に応じたスニペットの出し分け
+        *** etc.
+
+      ** \SATySFi;の型システムに詳しくないライトユーザこそ使ってほしい
+
+      ** 開発者の実力とリソースさえ揃えば、かなり便利な機能が実現できる
+  }
+
+>
+
+>%
+
+
++section{|\SATySFi; Language Server の実装|}<
+
++frame{実装言語：\Rust;}<
+
+  +listing{
+    * Rust を選んだ理由
       ** Rust を学びたかった
       ** 優れたパフォーマンス・省メモリ性・安全性に惹かれた
       ** 静的型付け言語であること由来の書きやすさに惹かれた
-      ** Rust で書かれた代表的な言語サーバが複数あった
+      ** Rust で書かれた代表的な language server が複数あった
 
          \fig-block?:(0.)(textbox ?:(set-font-size-ratio 0.85) {
            \easytable?:[stripe; t; b][l; l]{
@@ -498,7 +523,7 @@ document '<
   }
 >
 
-+frame{実装：パーサ}<
++frame{パーサの実装}<
   +listing{
 
     * パーサは language server と別リポジトリで開発
@@ -518,7 +543,7 @@ document '<
   }
 >
 
-+frame{実装：言語サーバ概観}<
++frame{サーバ機能の実装（概観）}<
   +listing{
     * `DocumentData` 構造体にファイルの内容を保持
       ** ファイルの文字列
@@ -534,7 +559,7 @@ document '<
   }
 >
 
-+frame{実装：各リクエストに対する処理の流れ（抜粋）}<
++frame{各リクエストに対する処理の流れ（抜粋）}<
   +listing{
     * ファイルが開かれたとき/変更されたとき (didOpen/didChange)
       ** ファイルを構文解析し、成功したらそのファイルの `Environment` を作成
@@ -549,37 +574,16 @@ document '<
   }
 >
 
->%
+>
+
 
 +section{| \SATySFi; Language Server の | 今後の課題と発展性 |}<%
 
-+frame{\SATySFi; Language Server の使用感}<
-
-  +listing{
-    * 基本的に、静的型付け言語と LSP は相性が良い
-      ** 静的解析で型が判明すれば賢い補完や診断情報をユーザに提示できるため
-      % ** 動的型付け言語に型注釈を付ける動きもあるほど
-
-    * \SATySFi; も例外ではない
-
-      % ** モードに応じた補完候補の出し分け、型に応じたスニペットの出し分けなどで開発体験の向上
-      ** 変数やコマンドに型が付くことで開発体験が向上する
-        *** モードに応じた補完候補の出し分け
-        *** 型に応じたスニペットの出し分け
-        *** etc.
-
-      ** \SATySFi;の型システムにに詳しくないライトユーザこそ使ってほしい
-
-      ** 開発者の実力とリソースさえ揃えば、かなり便利な機能が実現できる
-  }
-
->
-
-+frame{課題：エラー回復機構が強力なパーサ}<
++frame{エラー回復機構が強力なパーサ}<
 
   +listing{
     * \textbf{エラー回復}：文法の誤りを含むコードを適切に処理すること
-      ** 言語サーバが処理するテキストには文法エラーが高確率で含まれる
+      ** Language server が処理するテキストには文法エラーが高確率で含まれる
         *** 例：補完リクエスト時に送られる、入力途中のテキスト
 
       ** ちゃんとやるのはかなり難しい
@@ -607,7 +611,7 @@ document '<
 
 >
 
-+frame{課題：型検査・型推論機能の追加}<
++frame{型検査・型推論機能の追加}<
 
   +listing{
     * まだ型検査・型推論器は実装されていない
@@ -644,11 +648,11 @@ document '<
 +frame{その他の発展性}<
 
   +listing{
-    * \textbf{Doc comment} のホバー表示・補完の詳細画面での表示
+    * \textbf{Doc comment} のホバー表示
+      ** ソースコードに直接書かれたドキュメントを参照する機能
       ** 現在
          \link?:({doc comment 機能})(`https://github.com/gfngfn/SATySFi/wiki/%E8%BF%BD%E5%8A%A0%E3%81%97%E3%81%9F%E3%81%84%E6%A9%9F%E8%83%BD%E3%81%A8%E3%81%9D%E3%81%AE%E3%82%A4%E3%83%A1%E3%83%BC%E3%82%B8#2020-03-22-doc-comment`);
-         が本家で構想されている
-      ** コマンドの使い方がコマンド入力時に分かる
+         が言語本体の機能として構想されている
 
     * \textbf{Auto import}
       ** コマンド補完の際やコードアクションによって必要な依存を自動解決
