@@ -154,11 +154,10 @@ document '<
 +frame{Language Server Protocol (LSP)}<
 
   +p{
-    コード補完やエラー情報の提示など、プログラミングに役立つ様々な機能をあらゆるエディタに提供するためのプロトコル。
+    コード補完やエラー情報の提示など、開発（+ 執筆）に役立つ様々な機能をあらゆるエディタに提供するために考案されたプロトコル。
   }
 
   +fig-center(include-image 640pt `fig/pdf/lsp-overview.pdf` |> frame 2pt SlydifiThemeArctic.config#color#fg);
-
 
 >
 
@@ -238,7 +237,7 @@ document '<
 
 +frame{ \SATySFi; Language Server }<
   +listing{
-    * 以下の GitHub リポジトリで開発中 (WIP!)
+    * 以下の GitHub リポジトリで開発中
 
       \fig-block?:(align-left)(
         textbox {
@@ -554,18 +553,22 @@ document '<
 
 +section{| \SATySFi; Language Server の | 今後の課題と発展性 |}<%
 
-+frame{\SATySFi; with Language Server の感触}<
++frame{\SATySFi; Language Server の使用感}<
 
   +listing{
     * 基本的に、静的型付け言語と LSP は相性が良い
       ** 静的解析で型が判明すれば賢い補完や診断情報をユーザに提示できるため
-      ** 動的型付け言語に型注釈を付ける動きもあるほど
+      % ** 動的型付け言語に型注釈を付ける動きもあるほど
 
     * \SATySFi; も例外ではない
 
-      ** モードに応じた補完候補の出し分け、型に応じたスニペットの出し分けなどで開発体験の向上
+      % ** モードに応じた補完候補の出し分け、型に応じたスニペットの出し分けなどで開発体験の向上
+      ** 変数やコマンドに型が付くことで開発体験が向上する
+        *** モードに応じた補完候補の出し分け
+        *** 型に応じたスニペットの出し分け
+        *** etc.
 
-      ** \SATySFi; に不慣れな初心者ほど恩恵が大きい
+      ** \SATySFi;の型システムにに詳しくないライトユーザこそ使ってほしい
 
       ** 開発者の実力とリソースさえ揃えば、かなり便利な機能が実現できる
   }
@@ -604,7 +607,7 @@ document '<
 
 >
 
-+frame{課題：型検査・型推論の追加}<
++frame{課題：型検査・型推論機能の追加}<
 
   +listing{
     * まだ型検査・型推論器は実装されていない
