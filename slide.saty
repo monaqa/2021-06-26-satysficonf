@@ -25,46 +25,6 @@ let-inline ctx \Rust =
   in
   read-inline ctx {Rust}
 
-let budge ctx color it =
-  let ctx =
-    ctx
-      |> set-font-size 14pt
-      |> set-text-color SlydifiThemeArctic.config#color#fg
-  in
-  let fsize = get-font-size ctx in
-  let dpt = fsize *' 0.4 in
-  let hgt = fsize *' 1.2 in
-  let pads = (fsize *' 0.25, fsize *' 0.25, fsize *' 0.2, fsize *' 0.2) in
-  let deco color (x, y) wid _ _ =
-    let path = Gr.rectangle-round 3pt (x, y -' dpt) (x +' wid, y +' hgt) in
-    [
-      fill color path;
-      stroke 2pt (SlydifiThemeArctic.config#color#separator) path;
-    ]
-  in
-  let ib = script-guard Latin (read-inline ctx it) in
-  inline-frame-inner pads (deco color) ib
-
-let-inline ctx \budge-satysfi-package =
-  budge ctx (Color.of-css `#b4be82`) {\textbf{\SATySFi;} (package)}
-
-let-inline ctx \budge-satysfi-classfile =
-  budge ctx (Color.of-css `#89b8c2`) {\textbf{\SATySFi;} (class file)}
-
-let-inline ctx \budge-rust-program =
-  budge ctx (Color.of-css `#e27878`) {\Rust;}
-
-let add-caption it fb =
-  vconcat [
-    fb;
-    gap 4pt;
-    textbox ?:(SlydifiScheme.apply-font-cfg SlydifiThemeArctic.config#font#pagenum) it
-  ]
-
-let-inline ctx \fig-widfill fbf =
-  let wid = get-text-width ctx in
-  read-inline ctx {\fig-center(fbf wid);}
-
 let-block ctx +emphbox it =
   let wid = get-text-width ctx in
   let fbf wid =
@@ -77,11 +37,6 @@ let-block ctx +emphbox it =
       |> bgcolor bg-color
   in
   read-block ctx '<+fig-center(fbf wid);>
-
-let-block ctx +pass =
-  let () = display-message `pass!` in
-  block-nil
-
 
 in
 
@@ -99,29 +54,24 @@ document '<
 
     +listing{
       * 名前：monaqa
-        ** Twitter: \link(`https://twitter.com/mo_naqa`);
-        ** GitHub: \link(`https://github.com/monaqa`);
+        ** Twitter: \link?:({\@mo_naqa})(`https://twitter.com/mo_naqa`);
+        ** GitHub: \link?:({monaqa})(`https://github.com/monaqa`);
 
       * \SATySFi; 歴：2年ぐらい
 
       * 技術系コミュニティ所属
 
         ** \SATySFi; Slack
-
         ** vim-jp Slack
-
         ** Rust-jp Slack
-
     }
-
   >%
-
 >
 
 +frame{今までに作った \SATySFi; 関連のプログラム}<
 
   +listing{
-    * \SATySFi; パッケージ・クラスファイル
+    * \SATySFi; クラスファイル・パッケージ
 
       \fig-center(textbox ?:(set-font-size-ratio 0.8) {
         \easytable?:[stripe; t; b;][c; l]{
@@ -212,19 +162,6 @@ document '<
 
 >
 
-% +frame{Language Server Protocol (LSP)}<
-%
-%   +p{
-%     言語サーバとクライアントは LSP という通信仕様に従って通信する。
-%   }
-%
-%   +fig-center(
-%     include-image 600pt `fig/jpg/language-server-sequence.jpg`
-%       |> add-caption { \link(`https://microsoft.github.io/language-server-protocol/overviews/lsp/overview/`); }
-%   );
-%
-% >
-
 +frame{Language Server（言語サーバ）}<
 
   +p{
@@ -238,18 +175,20 @@ document '<
   +fig-center(textbox ?:(set-font-size-ratio 0.8) {
     \easytable?:[stripe; t; b; v 1;]
     ?:[
-      set-fmt-range (5, 0) (5, 1) c;
-    ][l; lw 460pt]{
-      | \textbf{補完} % (completion)
-      | ユーザが挿入しようとしている変数名・メソッド名などを予測して候補を表示する \br;
-      （挿入内容に応じスニペットを展開する場合も）
-      | \textbf{詳細表示} % (hover)
+      set-fmt-(6, 1) c;
+    ][r; lw 460pt]{
+      | 補完 % (completion)
+      | ユーザが挿入しようとしている変数名・メソッド名などを予測して候補を表示する
+      % （挿入内容に応じスニペットを展開する場合も）
+      | 診断情報表示 % (diagnostics)
+      | 静的解析によるエラーや警告を表示する
+      | 詳細表示 % (hover)
       | カーソル上の変数・関数の型情報やドキュメンテーションなどを表示する
-      | \textbf{定義ジャンプ} %\br; (goToDefinition)
+      | 定義ジャンプ %\br; (goToDefinition)
       | カーソル上の変数が定義されている場所に移動する
-      | \textbf{リネーム} % (rename)
+      | リネーム % (rename)
       | カーソル上の変数名を変更する
-      | \textbf{コードアクション} % \br; (code action)
+      | コードアクション % \br; (code action)
       | 言語に応じて様々な処理を実行する（カーソル下にあるモジュールのインポート、getter/setter の自動作成など）
       | ${\vdots}
       | ${\vdots}
@@ -281,7 +220,7 @@ document '<
   }
 
     +fig-center(
-      include-image ?:(select (fun x -> x)) 600pt `fig/pdf/ls-overview.pdf`
+      include-image ?:(select (fun x -> x)) 630pt `fig/pdf/ls-overview.pdf`
         |> frame 1.5pt (SlydifiThemeArctic.config#color#fg)
     );
 
@@ -293,7 +232,7 @@ document '<
 
 +frame?:(2){\SATySFi; Language Server とは}<
     +fig-center(
-      include-image ?:(select (fun x -> x + 2)) 660pt `fig/pdf/ls-overview.pdf`
+      include-image ?:(select (fun x -> x + 2)) 630pt `fig/pdf/ls-overview.pdf`
     );
 >
 
