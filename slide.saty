@@ -105,42 +105,6 @@ document '<
 
 >
 
-% +frame{今までに作った \SATySFi; 関連のプログラム}<
-% 
-%   +fig-center(textbox ?:(set-font-size-ratio 0.8) {
-% 
-%   });
-% 
-%   +description{
-%     * \textbf{satysfi-enumitem} \budge-satysfi-package;
-%       ** 豊富なスタイルの箇条書きを組むためのパッケージ
-%     * \textbf{\SLyDIFi;} \budge-satysfi-classfile;
-%       ** スライド作成のためのクラスファイル（\textbf{このスライドも\SLyDIFi;製}）
-%     * \textbf{satysfi-easytable} \budge-satysfi-package;
-%       ** シンプルな表を簡単に組むためのパッケージ
-%     * \textbf{satysfi-azmath} \budge-satysfi-package;
-%       ** アクセント、括弧類、
-%          \LaTeX; の \link?:({amsmath})(`https://www.ctan.org/pkg/amsmath`);
-%          と似た数式環境などを提供するパッケージ
-%   }
-% 
-% >
-% 
-% +frame{今までに作った \SATySFi; 関連のプログラム}<
-% 
-%   +description{
-%     * \textbf{satysfi-figbox} \budge-satysfi-package;
-%       ** 図表を自由に組み合わせ、適切な場所に配置するためのパッケージ
-%     * \textbf{satysfi-railway} \budge-satysfi-package;
-%       ** グラフィックスを描きやすくするためのパッケージ
-%     * \textbf{satysfi-parser} \budge-rust-program;
-%       ** Parsing expression grammar (PEG) を使用した \SATySFi; のパーサ
-%     * \emph{satysfi-language-server} \budge-rust-program;
-%       ** \SATySFi; の言語サーバ
-%   }
-% 
-% >
-
 +namedframe(`toc`){目次}<
   +listing{
     * Language Server Protocol
@@ -179,7 +143,6 @@ document '<
     ][r; lw 460pt]{
       | 補完 % (completion)
       | ユーザが挿入しようとしている変数名・メソッド名などを予測して候補を表示する
-      % （挿入内容に応じスニペットを展開する場合も）
       | 診断情報表示 % (diagnostics)
       | 静的解析によるエラーや警告を表示する
       | 詳細表示 % (hover)
@@ -199,16 +162,6 @@ document '<
 
 
 +frame?:(3){なぜ LSP が注目されているのか}<
-
-  % * 各エディタは各々の言語に対して拡張を作る必要があった
-  % * 各言語は各々のエディタに対して拡張を作る必要があった
-  % * ${M} 個のエディタが ${N} 個の言語に対応するには ${MN} 個の拡張が必要
-  % * マイナーなエディタのマイナーな言語に対応する拡張は作られにくい
-
-  % +emphbox(
-  %   select-from-two (only 1) {エディタ・言語毎に各々プラグインや拡張を作る必要があった}
-  %     {マイナーなエディタ・言語では使用者が少なく実装も進まない}
-  %   );
 
   +listing{
     * \select(till 2){LSP の登場前}{LSP の登場\emph{後}}
@@ -290,7 +243,6 @@ document '<
 
   +emphbox{
     変数やコマンドにカーソルを合わせると、その詳細を表示
-      % ** 型がユーザにより明示されている場合は型も表示
   }
 
   +fig-center(vconcat ?:align-center [
@@ -392,33 +344,9 @@ document '<
 
   +select(only 1)<
     +fig-center(
-      % hconcat [
-      %   vconcat ?:align-center [
-      %     textbox {例: `\easytable` コマンド};
-      %     gap 10pt;
-      %     textbox ?:(set-font-size-ratio 0.8) { `[cellfmt list; inline-text list]` 型の};
-      %     gap 4pt;
-      %     textbox ?:(set-font-size-ratio 0.8) { 引数をとるインラインコマンド };
-      %     gap 15pt;
-      %     include-image 300pt `fig/jpg/completion-command-snippet-1.jpg`
-      %   ];
-      %   sep ?:(stroke-line 2pt (SlydifiThemeArctic.config#color#separator)) 30pt;
-      %   vconcat ?:align-center [
-      %     textbox {例: `+section` コマンド};
-      %     gap 10pt;
-      %     textbox ?:(set-font-size-ratio 0.8) { `[inline-text list; block-text]` 型の };
-      %     gap 4pt;
-      %     textbox ?:(set-font-size-ratio 0.8) { 引数をとるブロックコマンド };
-      %     gap 15pt;
-      %     include-image 300pt `fig/jpg/completion-command-snippet-2.jpg`
-      %   ]
-      % ]
-
       vconcat [
         include-image 600pt `fig/jpg/vscode-completion-snippet-1.jpg`;
-
         gap 20pt;
-
         include-image 600pt `fig/jpg/vscode-completion-snippet-2.jpg`;
       ]
     );
@@ -437,52 +365,14 @@ document '<
 
 >
 
-% +frame{機能1：補完機能（詳細）}<
-%
-%   +listing{
-%     * コマンド名の補完
-%       ** 編集中のファイル、又は require/import しているパッケージ内で定義されたコマンドを補完
-%       ** 現在のモード（インライン/ブロック/数式）に合わせて候補を変更
-%         *** 数式モードではインラインコマンドが出ない、逆も然り
-%       ** 宣言時にシグニチャが明示されていればそれを活用
-%         *** 補完候補の詳細画面に表示
-%         *** シグネチャの型に合わせてスニペット展開
-%   }
-%
-% >
-%
-% +frame{機能1：補完機能（詳細）}<
-%
-%   +listing{
-%     * 変数名の補完
-%
-%       ** 編集中のファイル、又は require/import しているパッケージ内で定義された変数を補完
-%
-%       ** 現在のモードがプログラムモードのときに表示
-%         *** インライン/ブロック/数式モードでは表示されない
-%
-%       ** 宣言時にシグニチャが明示されていればそれを活用
-%         *** 補完候補の詳細画面に表示
-%         *** スニペット展開は行わない（部分適用の可能性があるため）
-%
-%       ** プリミティヴも補完の対象
-%
-%       ** プリアンブルで宣言された変数のみ対象（ `let in` 式束縛などは対象外）
-%
-%   }
-%
-% >
-
 +frame{\SATySFi; Language Server の使用感}<
 
   +listing{
     * 基本的に、静的型付け言語と LSP は相性が良い
       ** 静的解析で型が判明すれば賢い補完や診断情報をユーザに提示できるため
-      % ** 動的型付け言語に型注釈を付ける動きもあるほど
 
     * \SATySFi; も例外ではない
 
-      % ** モードに応じた補完候補の出し分け、型に応じたスニペットの出し分けなどで開発体験の向上
       ** 変数やコマンドに型が付くことで開発体験が向上する
         *** モードに応じた補完候補の出し分け
         *** 型に応じたスニペットの出し分け
@@ -552,10 +442,6 @@ document '<
         *** モジュール（名前、定義の位置）
         *** 変数（名前、型情報、定義の位置）
         *** コマンド（名前、型情報、定義の位置）
-
-         % \fig-block?:(align-left)(textbox ?:(set-font-size-ratio 0.8) {
-         %   \easytable[]{||}
-         % });
   }
 >
 
@@ -594,20 +480,7 @@ document '<
 
     * 現時点では、1つでも回復不能なエラーがあると情報を全く取れなくなる
       ** カーソル位置のモードや依存パッケージぐらいは取りたい
-
   }
-
-  % +listing{
-  %   * パーサの\textbf{エラー回復機構}をより強力にする
-  %     ** パーサが回復不能な構文エラーが起きると、適切な補完候補が出せない
-  %       *** 現在のモード（プログラムモード・水平モード・垂直モードなど）や依存パッケージが分からないため
-  % 
-  %     ** しかし「ユーザの入力途中」のテキストはたいてい構文エラー
-  % 
-  %     ** そのため現在はユーザの入力途中でもある程度パーサが対処できるように書いているが、完璧ではない
-  % 
-  %     ** ユーザの入力途中でもエラー回復可能、またはカーソル位置のモードや依存ファイルの情報を取得できるパーサへと改良する
-  % }
 
 >
 
@@ -619,31 +492,14 @@ document '<
     * 変数・コマンドの型推論・型検査によって実現できそうなこと
 
       ** 型エラーの診断情報表示
-
       ** シグニチャが明記されていないコマンド・変数の補完、詳細情報表示
-
       ** レコードのフィールド名での補完候補の絞り込み
-
       ** パイプライン演算子直後の補完候補の絞り込み
-
       ** etc.
   }
 
 >
 
-
-
-% +frame{賢い diagnostics}<
-%
-%   +listing{
-%     * パッケージのパスが存在しないときエラーを表示する
-%     % * 特定の著名パッケージや特定の使い方を仮定した診断情報
-%     %   ** そのままでは静的解析が難しくとも、特定のコマンドが使われていることなどを仮定すれば可能なことがある
-%     %   ** 具体例
-%     %     *** フォント名や画像ファイル名のパスが解決できないときエラーを表示する
-%     %     *** reference が存在しない時エラーを表示する
-%   }
-% >
 
 +frame{その他の発展性}<
 
